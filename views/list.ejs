@@ -27,8 +27,10 @@
       <!-- place new items inside a div called newItem with checkbox next to it. Basically to get rid of basic list with bullets -->
     <div class="newItem">
       <input type="checkbox">
-      <p> <%=  newListItems[i]  %></p>
+      <!-- since newListItems is the array of our results from mongodb we can tap into the name key only by using dot notation -->
+      <p> <%=  newListItems[i].name  %></p>
     </div>
+    
     <!-- wrap final closing tag of for loop with ejs scriplet tags -->
 
     <% } %>
