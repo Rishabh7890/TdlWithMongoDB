@@ -19,7 +19,7 @@ app.set("view engine", "ejs");
 mongoose.connect("mongodb://localhost:27017/tdlDB", { useNewUrlParser: true });
 
 // create schema for items in db
-const itemsSchema = new mongoose.Schema ({
+const itemsSchema = new mongoose.Schema({
   name: String
 });
 
@@ -27,72 +27,62 @@ const itemsSchema = new mongoose.Schema ({
 const Item = mongoose.model("Item", itemsSchema);
 
 // create a default document to be entered in Items collection
-const defItem = new Item ({
-  name: "I had an awesome day today 😁"
+const defItem = new Item({
+  name: "I had an awesome day today! 😁"
 });
 
 // put default item 'defItem' into array
 const defItems = [defItem];
 
-// insert defItems array into db using insertMany()
-// Item.insertMany(defItems, function(err){
-//   if(err){
-//     console.log(err);
-//   } else {
-//     console.log("inserted default items to db!");
-//   }
-// });
-
 // create const for day using momentjs
-const day = moment().format('dddd MMMM Do YYYY');
+const day = moment().format("dddd MMMM Do YYYY");
 
 // get method. Be sure to create a views folder so we can use ejs
 app.get("/", function(req, res) {
-
   // use find() on model to retrieve items from db
-  Item.find( {}, function(err, results){
-    if(err){
-      console.log(err);
+  // empty {} means we want all results back
+  Item.find({}, function(err, results) {
+    // if results come back as empty, insert defItems array into db using insertMany()
+    if (results.length === 0) {
+      // insert defItems array into db using insertMany()
+      Item.insertMany(defItems, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Inserted default items to db!");
+        }
+      });
+      // redirect back to root route after adding defItems to db
+      // once it redirects the app will actually go to else block below and render our page with items added to our list
+      res.redirect("/");
     } else {
-      // put res.render within find()
+      // res.render() goes within else block if results !== 0.
       // correlate listTitle with day const
-      // correlate newListItems with the results we got back from our db
+      // correlate newListItems with the results we have in our db
       res.render("list", { listTitle: day, newListItems: results });
     }
   });
-
-  // correlate listTitle with day
-});
-
-app.get("/work", function(req, res) {
-
-  res.render("list", { listTitle: "Work List", newListItems: workItems});
 });
 
 // post route to add new item to list
-app.post("/", function(req, res){
-
+app.post("/", function(req, res) {
   const newItem = req.body.newItem;
   console.log(newItem);
   // console log body of request to see what is getting back when we hit submit button and base if statement off of that
   console.log(req.body);
 
   // use dddd part of moment because the value will only be the characters before a space, not whole day const
-  if(req.body.add === moment().format('dddd')){
+  if (req.body.add === moment().format("dddd")) {
     // push newItem to newItems array
     newItems.push(newItem);
 
-  // redirect back to home route since we added newItem to render above
+    // redirect back to home route since we added newItem to render above
     res.redirect("/");
-  }
-  else if(req.body.add === "Work"){
-
+  } else if (req.body.add === "Work") {
     workItems.push(newItem);
 
     res.redirect("work");
   }
-
-  
 });
 
 // app listener

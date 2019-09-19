@@ -22,18 +22,14 @@
 
   <!-- create another div with class box to apply css styles -->
   <div class="box">
-    <!-- use ejs to use a for loop to create newListItems -->
-    <% for (var i =0; i< newListItems.length; i++) { %>
-      <!-- place new items inside a div called newItem with checkbox next to it. Basically to get rid of basic list with bullets -->
-    <div class="newItem">
-      <input type="checkbox">
-      <!-- since newListItems is the array of our results from mongodb we can tap into the name key only by using dot notation -->
-      <p> <%=  newListItems[i].name  %></p>
-    </div>
     
-    <!-- wrap final closing tag of for loop with ejs scriplet tags -->
-
-    <% } %>
+  <%  newListItems.forEach(item => { %>
+      <div class="newItem">
+        <input type="checkbox">
+        <p> <%=  item.name  %></p>
+      </div>
+  <%  }) %>
+    
 
     <!-- add form to post new item to list -->
     <!-- add newItem class to it so its styled same way as our new items -->
