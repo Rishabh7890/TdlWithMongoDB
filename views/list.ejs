@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0-11/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <title>To Do With Mongo!</title>
+</head>
+
+<body>
+
+  <!-- create div for box with id heading to apply css styles -->
+  <div class="box" id="heading">
+    <h1>
+      <%= listTitle %>
+    </h1>
+  </div>
+
+  <!-- create another div with class box to apply css styles -->
+  <div class="box">
+    <!-- use ejs to use a for loop to create newListItems -->
+    <% for (var i =0; i< newListItems.length; i++) { %>
+      <!-- place new items inside a div called newItem with checkbox next to it. Basically to get rid of basic list with bullets -->
+    <div class="newItem">
+      <input type="checkbox">
+      <p> <%=  newListItems[i]  %></p>
+    </div>
+    <!-- wrap final closing tag of for loop with ejs scriplet tags -->
+
+    <% } %>
+
+    <!-- add form to post new item to list -->
+    <!-- add newItem class to it so its styled same way as our new items -->
+    <form class="newItem" action="/" method="POST">
+      <input type="text" name="newItem" placeholder="Add New Item" autocomplete="off">
+      <!-- use ejs for value so when we console log on post we can use the value to redirect to appropriate page -->
+      <button type="submit" name="add" value= <%= listTitle %> >+</button>
+    </form>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+
+</html>

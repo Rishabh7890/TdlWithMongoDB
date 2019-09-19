@@ -1,0 +1,25 @@
+{
+  "name": "TdlWithMongoDB",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rishabh7890/TdlWithMongoDB.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rishabh7890/TdlWithMongoDB/issues"
+  },
+  "homepage": "https://github.com/Rishabh7890/TdlWithMongoDB#readme",
+  "dependencies": {
+    "ejs": "^2.7.1",
+    "express": "^4.17.1",
+    "moment": "^2.24.0"
+  }
+}
