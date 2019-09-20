@@ -7,6 +7,9 @@ const app = express();
 const mongoose = require("mongoose");
 let PORT = process.env.PORT || 3000;
 
+// use to be able to use findOneAndUpdate(). gets rid of deprecation warning
+mongoose.set("useFindAndModify", false);
+
 // set up middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -33,6 +36,15 @@ const defItem = new Item({
 
 // put default item 'defItem' into array
 const defItems = [defItem];
+
+// create new schema for custom lists with 2 fields. First is name of list and second is array of items which will be itemsSchema based items
+const listSchema = new mongoose.Schema({
+  name: String,
+  items: [itemsSchema]
+});
+
+// create model for custom lists created by user
+const List = mongoose.model("List", listSchema);
 
 // create const for day using momentjs
 const day = moment().format("dddd MMMM Do YYYY");
@@ -64,15 +76,44 @@ app.get("/", function(req, res) {
   });
 });
 
+// create get route for custom lists provided by user in url
+app.get("/:customListName", function(req, res) {
+  // create const for customListName
+  const customListName = req.params.customListName;
+
+  // use findOne() to see if a list exists with the customListName
+  List.findOne({ name: customListName }, function(err, foundList) {
+    if (!err) {
+      // check for if foundList exists or not. Since findOne returns an object we can simply use (!foundList) in if statement
+      if (!foundList) {
+        // create new list documents based on List model and listSchema
+        const list = new List({
+          name: customListName,
+          items: defItems
+        });
+
+        // save list into collection
+        list.save();
+
+        // redirect back to current custom route
+        res.redirect("/" + customListName);
+      } else {
+        // show an existing list if already exists
+        res.render("list", {listTitle: `${foundList.name} list for: ${day}`, newListItems: foundList.items});
+      }
+    }
+  });
+});
+
 // post route to add new item to list
 app.post("/", function(req, res) {
   const itemName = req.body.newItem;
 
   // create a document for item from req.body to store in db
-  const addedItem = new Item ({
+  const addedItem = new Item({
     name: itemName
   });
-  
+
   // save the added item into db
   addedItem.save();
 
@@ -81,14 +122,14 @@ app.post("/", function(req, res) {
 });
 
 // create post route for deleting items when checkbox is hit
-app.post("/delete", function(req, res){
+app.post("/delete", function(req, res) {
   // create const for what we get back as the value of req.body.checkbox
   // without value in form in list.ejs we would simply get back "on". Since we set value to item._id we get back _id
   const checkedItemId = req.body.checkbox;
 
   // remove checked item by using findByIdAndDelete()
-  Item.findByIdAndDelete(checkedItemId, function(err){
-    if(err){
+  Item.findByIdAndDelete(checkedItemId, function(err) {
+    if (err) {
       console.log(err);
     } else {
       console.log(`Successfully deleted item with id ${checkedItemId}`);
