@@ -22,21 +22,30 @@
 
   <!-- create another div with class box to apply css styles -->
   <div class="box">
-    
-  <%  newListItems.forEach(item => { %>
+
+    <%  newListItems.forEach(item => { %>
+    <!-- create form for deleting from our db when we hit checkbox -->
+    <form action="/delete" method="POST">
+
+
       <div class="newItem">
-        <input type="checkbox">
+        <!-- add onChange to input to make it submit so we can POST to /delete when checkbox is clicked -->
+        <!-- add name to input so we can tap into it in req.body -->
+        <!-- add value which will be equal to ejs values. Use item used in forEach loop and tap into the _id -->
+        <input type="checkbox" name="checkbox" value="<%= item._id %>" onchange="this.form.submit()">
         <p> <%=  item.name  %></p>
       </div>
-  <%  }) %>
-    
+
+    </form>
+    <%  }) %>
+
 
     <!-- add form to post new item to list -->
     <!-- add newItem class to it so its styled same way as our new items -->
     <form class="newItem" action="/" method="POST">
       <input type="text" name="newItem" placeholder="Add New Item" autocomplete="off">
       <!-- use ejs for value so when we console log on post we can use the value to redirect to appropriate page -->
-      <button type="submit" name="add" value= <%= listTitle %> >+</button>
+      <button type="submit" name="add" value=<%= listTitle %>>+</button>
     </form>
 
   </div>

@@ -80,6 +80,24 @@ app.post("/", function(req, res) {
   res.redirect("/");
 });
 
+// create post route for deleting items when checkbox is hit
+app.post("/delete", function(req, res){
+  // create const for what we get back as the value of req.body.checkbox
+  // without value in form in list.ejs we would simply get back "on". Since we set value to item._id we get back _id
+  const checkedItemId = req.body.checkbox;
+
+  // remove checked item by using findByIdAndDelete()
+  Item.findByIdAndDelete(checkedItemId, function(err){
+    if(err){
+      console.log(err);
+    } else {
+      console.log(`Successfully deleted item with id ${checkedItemId}`);
+      // redirect back to home route after deleting item from db
+      res.redirect("/");
+    }
+  });
+});
+
 // app listener
 app.listen(PORT, function() {
   console.log("App listening on PORT: " + PORT);
