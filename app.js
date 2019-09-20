@@ -66,23 +66,18 @@ app.get("/", function(req, res) {
 
 // post route to add new item to list
 app.post("/", function(req, res) {
-  const newItem = req.body.newItem;
-  console.log(newItem);
-  // console log body of request to see what is getting back when we hit submit button and base if statement off of that
-  console.log(req.body);
+  const itemName = req.body.newItem;
 
-  // use dddd part of moment because the value will only be the characters before a space, not whole day const
-  if (req.body.add === moment().format("dddd")) {
-    // push newItem to newItems array
-    newItems.push(newItem);
+  // create a document for item from req.body to store in db
+  const addedItem = new Item ({
+    name: itemName
+  });
+  
+  // save the added item into db
+  addedItem.save();
 
-    // redirect back to home route since we added newItem to render above
-    res.redirect("/");
-  } else if (req.body.add === "Work") {
-    workItems.push(newItem);
-
-    res.redirect("work");
-  }
+  // after saving the new item, redirect back to home route to display new list
+  res.redirect("/");
 });
 
 // app listener
