@@ -20,7 +20,7 @@ app.use(express.static("public"));
 app.set("view engine", "ejs");
 
 // create new mongo db and connection. // set useNewUrlParser to true to get rid of deprication warning
-mongoose.connect("mongodb://localhost:27017/tdlDB", { useNewUrlParser: true });
+mongoose.connect("mongodb+srv://admin-rishabh:test123@cluster0-fep8h.mongodb.net/tdlDB", { useNewUrlParser: true });
 
 // create schema for items in db
 const itemsSchema = new mongoose.Schema({
