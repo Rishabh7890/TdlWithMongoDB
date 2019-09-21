@@ -1,6 +1,6 @@
 # TdlWithMongoDB
 
-#### An updated version of the basic to-do list I created earlier which includes MongoDB and the ability to add as many custom lists as you would like!
+#### A Full Stack Lists Application to stay organized. Application has the ability to add as many custom lists as a user would like!
 
 * [Go To Application!](https://todolist-rishabhgoel.herokuapp.com)
 
