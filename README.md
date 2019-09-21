@@ -9,10 +9,10 @@
 #### The default list will be rendered as such:
 ![screenshot](public/images/tdlSS.png)
 
-#### To create a custom list edit the url like this:
+#### To create a custom list edit the url by adding after the '/' like this:
 ![screenshot](public/images/tdlURLSS.png)
 
-#### The custome list will now be rendered as such:
+#### The custom list will now be rendered as such:
 ![screenshot](public/images/tdlCustListSS.png)
 
 ## Technologies used:
