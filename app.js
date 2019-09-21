@@ -7,7 +7,7 @@ const app = express();
 const mongoose = require("mongoose");
 let PORT = process.env.PORT || 3000;
 
-// use to be able to use findOneAndUpdate(). gets rid of deprecation warning
+// use to be able to use findOne() methods. gets rid of deprecation warning
 mongoose.set("useFindAndModify", false);
 
 // set up middleware
@@ -70,7 +70,7 @@ app.get("/", function(req, res) {
     } else {
       // res.render() goes within else block if results !== 0.
       // correlate listTitle with day const
-      // correlate newListItems with the results we have in our db
+      // correlate newListItems with the results we have in our db. In EJS file we specified we only want the name property of the each result
       res.render("list", { listTitle: day, newListItems: results });
     }
   });
@@ -108,17 +108,33 @@ app.get("/:customListName", function(req, res) {
 // post route to add new item to list
 app.post("/", function(req, res) {
   const itemName = req.body.newItem;
+  const listName = req.body.add;
 
   // create a document for item from req.body to store in db
   const addedItem = new Item({
     name: itemName
   });
 
-  // save the added item into db
+  // check to see if val of add in ejs is = to default list dddd from moment.js or one of the custom lists
+  if(listName === moment().format('dddd')){
+    // save the added item into db
   addedItem.save();
 
   // after saving the new item, redirect back to home route to display new list
   res.redirect("/");
+  } else {
+    // if not default list, search for list with name of listName by using findOne()
+    List.findOne({name: listName}, function(err, foundList){
+      // push addedItem into the custom foundList's items array
+      foundList.items.push(addedItem);
+      // save foundList so its updated with new data
+      foundList.save();
+      // redirect to customList route
+      res.redirect("/" + listName);
+    });
+  }
+
+  
 });
 
 // create post route for deleting items when checkbox is hit
