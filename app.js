@@ -5,6 +5,7 @@ const express = require("express");
 const moment = require("moment");
 const app = express();
 const mongoose = require("mongoose");
+const _ = require("lodash");
 let PORT = process.env.PORT || 3000;
 
 // use to be able to use findOne() methods. gets rid of deprecation warning
@@ -79,7 +80,8 @@ app.get("/", function(req, res) {
 // create get route for custom lists provided by user in url
 app.get("/:customListName", function(req, res) {
   // create const for customListName
-  const customListName = req.params.customListName;
+  // use lodash _.capitalize() so that first letter is always capitalized. This will prevent making different lists for ex: Work/work
+  const customListName = _.capitalize(req.params.customListName);
 
   // use findOne() to see if a list exists with the customListName
   List.findOne({ name: customListName }, function(err, foundList) {
@@ -99,7 +101,10 @@ app.get("/:customListName", function(req, res) {
         res.redirect("/" + customListName);
       } else {
         // show an existing list if already exists
-        res.render("list", {listTitle: `${foundList.name} list for: ${day}`, newListItems: foundList.items});
+        res.render("list", {
+          listTitle: foundList.name,
+          newListItems: foundList.items
+        });
       }
     }
   });
@@ -116,15 +121,15 @@ app.post("/", function(req, res) {
   });
 
   // check to see if val of add in ejs is = to default list dddd from moment.js or one of the custom lists
-  if(listName === moment().format('dddd')){
+  if (listName === moment().format("dddd")) {
     // save the added item into db
-  addedItem.save();
+    addedItem.save();
 
-  // after saving the new item, redirect back to home route to display new list
-  res.redirect("/");
+    // after saving the new item, redirect back to home route to display new list
+    res.redirect("/");
   } else {
     // if not default list, search for list with name of listName by using findOne()
-    List.findOne({name: listName}, function(err, foundList){
+    List.findOne({ name: listName }, function(err, foundList) {
       // push addedItem into the custom foundList's items array
       foundList.items.push(addedItem);
       // save foundList so its updated with new data
@@ -133,8 +138,6 @@ app.post("/", function(req, res) {
       res.redirect("/" + listName);
     });
   }
-
-  
 });
 
 // create post route for deleting items when checkbox is hit
@@ -142,17 +145,30 @@ app.post("/delete", function(req, res) {
   // create const for what we get back as the value of req.body.checkbox
   // without value in form in list.ejs we would simply get back "on". Since we set value to item._id we get back _id
   const checkedItemId = req.body.checkbox;
+  const listName = req.body.cListName;
 
-  // remove checked item by using findByIdAndDelete()
-  Item.findByIdAndDelete(checkedItemId, function(err) {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(`Successfully deleted item with id ${checkedItemId}`);
-      // redirect back to home route after deleting item from db
-      res.redirect("/");
-    }
-  });
+  // check to see if we are deleting from the default list or a custom list
+  if (listName === day) {
+    // remove checked item by using findByIdAndDelete()
+    Item.findByIdAndDelete(checkedItemId, function(err) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(`Successfully deleted item with id ${checkedItemId}`);
+        // redirect back to home route after deleting item from db
+        res.redirect("/");
+      }
+    });
+  } else {
+    // if deleting from a custom list we can use findOneAndUpdate() with $pull operator to delete item out items array
+    // first we find the list by name
+    // we use $pull operator as update and use it on the items array of the custom list, and pull out the item with the _id of checkedItemId
+    List.findOneAndUpdate({name: listName}, {$pull: {items: {_id: checkedItemId}}}, function(err, foundList){
+      if(!err){
+        res.redirect("/" + listName);
+      }
+    });
+  }
 });
 
 // app listener

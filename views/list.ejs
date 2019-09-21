@@ -36,6 +36,9 @@
         <p> <%=  item.name  %></p>
       </div>
 
+      <!-- create hidden input for deleting items off custom lists -->
+      <input type="hidden" name="cListName" value="<%= listTitle %>">
+
     </form>
     <%  }) %>
 
