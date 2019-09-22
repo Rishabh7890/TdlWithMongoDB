@@ -4,7 +4,7 @@
 
 * [Go To Application!](https://todolist-rishabhgoel.herokuapp.com)
 
-#### Default list will have the current date and time as the title. To create new custom lists, simply add a forward slash followed by whatever you would like to call the list in the url. This will create a new list with your custom title.
+#### Default list will have the current date as the title. It is meant to be a list for things you want to complete for today. To create new custom lists, with different titles simply add a forward slash followed by whatever you would like to call the list in the url. This will create a new list in the database with your own custom title. See example below.
 
 #### The default list will be rendered as such:
 ![screenshot](public/images/tdlSS.png)
@@ -26,4 +26,4 @@
 * MongoDB
 * Mongoose
 
-#### Made by Rishabh Goel
+#### Created by Rishabh Goel
